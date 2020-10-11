@@ -8,6 +8,8 @@ contract Allowance is Ownable {
         return owner() == _who;
     }
 
+    event AllowanceChanged(address indexed _forWhom, address indexed _byWhom, uint _oldAmount, uint _newAmount);
+
     mapping(address => uint) public allowance;
 
     modifier ownerOrAllowed(uint _amount) {
@@ -15,14 +17,16 @@ contract Allowance is Ownable {
         _;
     }
 
-    function setAllowance(address _to, uint _amount) public onlyOwner {
-        if(!isOwner(_to)) {
-            allowance[_to] = _amount;
+    function setAllowance(address _who, uint _amount) public onlyOwner {
+        if(!isOwner(_who)) {
+            emit AllowanceChanged(_who, msg.sender, allowance[_who], _amount);
+            allowance[_who] = _amount;
         }
     }
 
     function reduceAllowance(uint _amount) internal ownerOrAllowed(_amount) {
         if(!isOwner(msg.sender)) {
+            emit AllowanceChanged(msg.sender, msg.sender, allowance[msg.sender], allowance[msg.sender] - _amount);
             allowance[msg.sender] -= _amount;
         }
     }
