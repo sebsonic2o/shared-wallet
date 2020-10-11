@@ -21,4 +21,8 @@ contract SharedWallet is Allowance {
     function renounceOwnership() public override onlyOwner {
         revert("Can't renounce ownership with this contract");
     }
+
+    function transferOwnership(address) public override onlyOwner {
+        revert("Can't transfer ownership with this contract");
+    }
 }
