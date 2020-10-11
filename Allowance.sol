@@ -2,8 +2,11 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/contracts/math/SafeMath.sol";
 
 contract Allowance is Ownable {
+    using SafeMath for uint;
+
     function isOwner(address _who) internal view returns(bool) {
         return owner() == _who;
     }
@@ -26,8 +29,8 @@ contract Allowance is Ownable {
 
     function reduceAllowance(uint _amount) internal ownerOrAllowed(_amount) {
         if(!isOwner(msg.sender)) {
-            emit AllowanceChanged(msg.sender, msg.sender, allowance[msg.sender], allowance[msg.sender] - _amount);
-            allowance[msg.sender] -= _amount;
+            emit AllowanceChanged(msg.sender, msg.sender, allowance[msg.sender], allowance[msg.sender].sub(_amount));
+            allowance[msg.sender] = allowance[msg.sender].sub(_amount);
         }
     }
 }
