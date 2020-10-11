@@ -9,9 +9,9 @@ contract SharedWallet is Ownable {
 
     mapping(address => uint) public allowance;
 
-    function addAllowance(address _to, uint _amount) public onlyOwner {
+    function setAllowance(address _to, uint _amount) public onlyOwner {
         if(!isOwner(_to)) {
-            allowance[_to] += _amount;
+            allowance[_to] = _amount;
         }
     }
 
@@ -20,7 +20,7 @@ contract SharedWallet is Ownable {
         _;
     }
 
-    function reduceAllowance(uint _amount) public ownerOrAllowed(_amount) {
+    function reduceAllowance(uint _amount) internal ownerOrAllowed(_amount) {
         if(!isOwner(msg.sender)) {
             allowance[msg.sender] -= _amount;
         }
